@@ -1,10 +1,16 @@
 import express from 'express';
-import { addFavorite, getFavorites } from '../controle/favoritosControler';
-import { authenticateToken } from '../middleware/authMiddleware';
+import { addFavorite, getFavorites, removeFavorite } from '../controle/favoritosControler';
+import authenticateToken from '../middleware/authMiddleware';
 
 const router = express.Router();
 
-router.post('/add', authenticateToken, addFavorite);
-router.get('/', authenticateToken, getFavorites);
+// Rota para adicionar um favorito
+router.post('/favorites', authenticateToken, addFavorite);
+
+// Rota para listar os favoritos do usuário
+router.get('/favorites', authenticateToken, getFavorites);
+
+// Rota para remover um favorito
+router.delete('/favorites', authenticateToken, removeFavorite);
 
 export default router;

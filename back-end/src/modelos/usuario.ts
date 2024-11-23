@@ -1,8 +1,8 @@
-export interface User{
-    id?: number;
-    username: string;
-    email: string;
-    password: string;
-    created_at?: Date;
-  }
-  
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  created_at: string;
+  updated_at: string;
+}

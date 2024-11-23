@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import authRoutes from './rotas/authRotas';           // Suas rotas de autenticação
 import favoriteRoutes from './rotas/rotasFavoritos'; // Suas rotas de favoritos
-import { authenticateToken } from './middleware/authMiddleware'; // Middleware de autenticação
+import  authenticateToken  from './middleware/authMiddleware'; // Middleware de autenticação
 import { errorHandler } from './middleware/erroHandle';        // Middleware de erro
 import './types/express';  // Tipos personalizados (caso necessário)
 
@@ -18,7 +18,7 @@ app.use('/api/favorites', authenticateToken, favoriteRoutes); // Rota de favorit
 
 
 app.use(errorHandler);  // Middleware que trata os erros
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT 
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);

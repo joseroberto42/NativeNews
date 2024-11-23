@@ -1,8 +1,19 @@
-// App.js
 import React from 'react';
+import { StatusBar } from 'react-native';
 
-import NewsList from './screens/NewsList';
 
-export default function App() {
-  return <NewsList/>;
-}
+
+import AppNavigator from './src/navigation/AppNavegation';
+
+const App = () => {
+  return (
+      
+     
+      <AppNavigator></AppNavigator>
+  
+  );
+};
+
+
+
+export default App;

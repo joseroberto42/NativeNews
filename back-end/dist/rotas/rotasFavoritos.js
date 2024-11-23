@@ -5,8 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const favoritosControler_1 = require("../controle/favoritosControler");
-const authMiddleware_1 = require("../middleware/authMiddleware");
+const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = express_1.default.Router();
-router.post('/add', authMiddleware_1.authenticateToken, favoritosControler_1.addFavorite);
-router.get('/', authMiddleware_1.authenticateToken, favoritosControler_1.getFavorites);
+// Rota para adicionar um favorito
+router.post('/favorites', authMiddleware_1.default, favoritosControler_1.addFavorite);
+// Rota para listar os favoritos do usuário
+router.get('/favorites', authMiddleware_1.default, favoritosControler_1.getFavorites);
+// Rota para remover um favorito
+router.delete('/favorites', authMiddleware_1.default, favoritosControler_1.removeFavorite);
 exports.default = router;

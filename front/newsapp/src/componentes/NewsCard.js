@@ -1,30 +1,26 @@
-// src/components/NewsCard.js
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 
-const NewsCard = ({ newsUrl, title, description, imageUrl }) => {
-  const [image, setImage] = useState(imageUrl);
-
-  useEffect(() => {
-    // Caso o link da imagem seja inválido ou não exista, podemos definir uma imagem padrão
-    if (!imageUrl) {
-      setImage('https://via.placeholder.com/150'); // Imagem padrão
-    }
-  }, [imageUrl]);
-
+const NewsCard = ({ title, description, imageUrl, newsUrl, onFavorite, isFavorite }) => {
   return (
     <View style={styles.card}>
-      <Image source={{ uri: image }} style={styles.image} />
+      <Image source={{ uri: imageUrl }} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
-        <TouchableOpacity onPress={() => { 
-          // Aqui você pode adicionar lógica para abrir o link da notícia
-          // Por exemplo, usando o Linking do React Native
-          console.log('Link para a notícia:', newsUrl);
-        }}>
-          <Text style={styles.link}>Leia mais...</Text>
-        </TouchableOpacity>
+        <View style={styles.actions}>
+          <TouchableOpacity onPress={onFavorite}>
+            <FontAwesome 
+              name={isFavorite ? 'star' : 'star-o'} 
+              size={24} 
+              color={isFavorite ? 'gold' : 'gray'} 
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL(newsUrl)}>
+            <Text style={styles.link}>Leia mais</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -33,19 +29,14 @@ const NewsCard = ({ newsUrl, title, description, imageUrl }) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    margin: 10,
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 3,
-    elevation: 5,
+    margin: 10,
+    overflow: 'hidden',
+    elevation: 3,
   },
   image: {
     width: '100%',
-    height: 200,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    height: 150,
   },
   content: {
     padding: 10,
@@ -55,12 +46,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   description: {
-    marginVertical: 10,
     fontSize: 14,
-    color: '#555',
+    marginVertical: 5,
+  },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
   },
   link: {
     color: '#007BFF',
+    fontWeight: 'bold',
   },
 });
 

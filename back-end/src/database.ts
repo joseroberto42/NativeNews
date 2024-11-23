@@ -21,11 +21,12 @@ const checkDatabaseConnection = async () => {
     const connection = await pool.getConnection();
     console.log("Conexão com o banco de dados estabelecida com sucesso.");
     connection.release(); // Libera a conexão de volta para o pool
-  } catch (error) {
-    console.error("Erro ao conectar com o banco de dados:", error);
+  } catch (error: any) {
+    console.error("Erro ao conectar com o banco de dados:", error.message);
     process.exit(1); // Se não conseguir conectar, encerra o processo
   }
 };
+
 
 // Chamando a função para verificar a conexão ao iniciar o servidor
 checkDatabaseConnection();

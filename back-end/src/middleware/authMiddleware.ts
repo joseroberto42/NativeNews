@@ -1,22 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { User } from '../modelos/usuario';
+import dotenv from 'dotenv';
+import { User } from '../modelos/usuario';  // Importe a interface User
 
-export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
-  const token = req.headers.authorization?.split(' ')[1];
+dotenv.config();
 
-  if (!token) {
-    return next(new Error('Token de autenticação é necessário'));  // Usando next() com erro
-  }
+const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
 
-  jwt.verify(token, process.env.JWT_SECRET!, (err, user) => {
-    if (err) {
-      return next(new Error('Token inválido'));  // Passando erro para next()
-    }
+  if (!token) return res.status(401).json({ message: 'Acesso negado. Token não fornecido.' });
 
-    // Atribui a propriedade user com o tipo User
-    req.user = user as User;
+  jwt.verify(token, process.env.JWT_SECRET as string, (err, user) => {
+    if (err) return res.status(403).json({ message: 'Token inválido.' });
 
-    next();  // Chama o próximo middleware ou a função de rota
+    // Adicionando os dados do usuário ao req.user
+    req.user = user as User;  // O 'user' retornado do JWT será do tipo User
+    next();
   });
 };
+
+export default authenticateToken;
