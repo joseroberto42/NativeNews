@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, ActivityIndicator, Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, ActivityIndicator, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Se você estiver usando AsyncStorage
 import NewsCard from '../src/componentes/NewsCard';
 
 const API_KEY = '2bd9aa80977d4d9d8124356454bf287e'; // Substitua pela sua chave da API News
 const BASE_URL = 'https://newsapi.org/v2/top-headlines';
-const BACKEND_URL = 'http://localhost:5000/api/favorites/favorites'; // Substitua pela URL do backend
 
-const NewsList = ({ userId }) => {
+const NewsList = () => {
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -24,7 +22,6 @@ const NewsList = ({ userId }) => {
     { label: 'Tecnologia', value: 'technology' },
   ];
 
-  // Função para buscar as notícias
   const fetchNews = async (category = null) => {
     setLoading(true);
     try {
@@ -40,44 +37,6 @@ const NewsList = ({ userId }) => {
       console.error('Error fetching news:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Função para adicionar uma notícia aos favoritos
-  const addFavorite = async (news) => {
-    try {
-      const token = await AsyncStorage.getItem('authToken');
-
-      if (!token) {
-        console.log('Erro de autenticação', 'Você precisa estar logado para adicionar favoritos.');
-        return;
-      }
-
-      // Verifica se todos os campos necessários estão presentes
-      if (!news.title || !news.url || !news.description || !news.urlToImage) {
-        Alert.alert('Erro', 'Faltam informações para adicionar aos favoritos.');
-        return;
-      }
-
-      // Cria o objeto de favoritos com todos os campos necessários
-      const favoriteData = {
-        user_id: userId,
-        title: news.title,
-        description: news.description || '', // Caso o campo description seja opcional
-        imageUrl: news.urlToImage || '',    // Caso o campo imageUrl seja opcional
-        newsUrl: news.url,
-      };
-
-      // Envia a notícia para o backend
-      await axios.post(BACKEND_URL, favoriteData, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Inclui o token no cabeçalho
-        },
-      });
-
-      console.log('Sucesso', 'Notícia adicionada aos favoritos!');
-    } catch (error) {
-      console.error('Error adding favorite:', error);
     }
   };
 
@@ -139,7 +98,6 @@ const NewsList = ({ userId }) => {
               description={news.description}
               imageUrl={news.urlToImage}
               newsUrl={news.url}
-              onFavorite={() => addFavorite(news)} // Chama a função de adicionar favorito
             />
           ))}
         </ScrollView>
@@ -162,6 +120,7 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',  // Adicionando para permitir que os botões se ajustem
     alignItems: 'center',
     paddingHorizontal: 10,
   },
@@ -171,6 +130,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
     borderRadius: 20,
     marginHorizontal: 5,
+    marginBottom: 10, // Adicionando espaçamento inferior
+    minWidth: 100, // Garantir que os botões tenham uma largura mínima
+    alignItems: 'center',
   },
   filterButtonActive: {
     backgroundColor: '#007bff',
@@ -197,3 +159,4 @@ const styles = StyleSheet.create({
 });
 
 export default NewsList;
+

@@ -9,9 +9,15 @@ const authRotas_1 = __importDefault(require("./rotas/authRotas")); // Suas rotas
 const rotasFavoritos_1 = __importDefault(require("./rotas/rotasFavoritos")); // Suas rotas de favoritos
 const authMiddleware_1 = __importDefault(require("./middleware/authMiddleware")); // Middleware de autenticação
 const erroHandle_1 = require("./middleware/erroHandle"); // Middleware de erro
-require("./types/express"); // Tipos personalizados (caso necessário)
-// Inicializa o app
+require("./types/express");
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
+// Permitir requisições de qualquer origem
+app.use((0, cors_1.default)({
+    origin: 'http://localhost:8081', // URL do seu frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 // Configuração de middlewares
 app.use(body_parser_1.default.json()); // Middleware de análise do corpo da requisição (body-parser)
 // Rotas de autenticação e favoritos com autenticação

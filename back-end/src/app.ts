@@ -4,10 +4,18 @@ import authRoutes from './rotas/authRotas';           // Suas rotas de autentica
 import favoriteRoutes from './rotas/rotasFavoritos'; // Suas rotas de favoritos
 import  authenticateToken  from './middleware/authMiddleware'; // Middleware de autenticação
 import { errorHandler } from './middleware/erroHandle';        // Middleware de erro
-import './types/express';  // Tipos personalizados (caso necessário)
+import './types/express';  
+import cors from 'cors';
 
-// Inicializa o app
 const app = express();
+
+// Permitir requisições de qualquer origem
+app.use(cors({
+  origin: 'http://localhost:8081', // URL do seu frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 
 // Configuração de middlewares
 app.use(bodyParser.json());  // Middleware de análise do corpo da requisição (body-parser)

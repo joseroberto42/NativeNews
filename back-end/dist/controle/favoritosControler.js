@@ -8,19 +8,19 @@ const database_1 = __importDefault(require("../database"));
 // Adicionar favorito
 const addFavorite = async (req, res) => {
     const { id: userId } = req.user; // Desestruturando userId de req.user
-    const { title, description, imageUrl, newsUrl, item_id } = req.body;
+    const { title, description, imageUrl, newsUrl } = req.body;
     // Verificar se todos os campos necessários estão presentes
-    if (!title || !description || !newsUrl || !item_id) {
-        return res.status(400).json({ error: 'Os campos "title", "description", "newsUrl" e "item_id" são obrigatórios.' });
+    if (!title || !description || !imageUrl || !newsUrl) {
+        return res.status(400).json({ error: 'Os campos "title", "description", "imageUrl" e "newsUrl" são obrigatórios.' });
     }
     try {
-        // Verificar se o item já foi adicionado
+        // Verificar se o item já foi adicionado aos favoritos
         const [existingFavorite] = await database_1.default.execute('SELECT * FROM favorites WHERE user_id = ? AND newsUrl = ?', [userId, newsUrl]);
         if (existingFavorite.length > 0) {
             return res.status(400).json({ error: 'Esse item já está nos seus favoritos.' });
         }
         // Inserir favorito com as informações detalhadas da notícia
-        const result = await database_1.default.execute('INSERT INTO favorites (user_id, title, description, imageUrl, newsUrl, item_id) VALUES (?, ?, ?, ?, ?, ?)', [userId, title, description, imageUrl, newsUrl, item_id]);
+        const result = await database_1.default.execute('INSERT INTO favorites (user_id, title, description, imageUrl, newsUrl) VALUES (?, ?, ?, ?, ?)', [userId, title, description, imageUrl, newsUrl]);
         console.log('Resultado da inserção:', result);
         res.status(201).json({ message: 'Favorito adicionado com sucesso' });
     }

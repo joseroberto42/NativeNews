@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import NewsList from '../../screens/NewsList';
-import LoginScreen from '../../screens/LoginScreen';
+import FavoritosScreen from '../../screens/favoritoScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,7 +12,7 @@ const Layout = () => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Tab.Navigator>
           <Tab.Screen name="News" component={NewsList} />
-          <Tab.Screen name="Login" component={LoginScreen} />
+          <Tab.Screen name="Favoritos" component={FavoritosScreen} />
         </Tab.Navigator>
       </ScrollView>
     </SafeAreaView>

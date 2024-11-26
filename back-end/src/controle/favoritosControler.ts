@@ -5,17 +5,18 @@ import pool from '../database';
 // Adicionar favorito
 export const addFavorite = async (req: Request, res: Response) => {
   const { id: userId } = req.user!;  // Desestruturando userId de req.user
-  const { title, description, imageUrl, newsUrl, item_id } = req.body;
+  const { title, description, imageUrl, newsUrl } = req.body;
 
   // Verificar se todos os campos necessários estão presentes
-  if (!title || !description || !newsUrl || !item_id) {
-    return res.status(400).json({ error: 'Os campos "title", "description", "newsUrl" e "item_id" são obrigatórios.' });
+  if (!title || !description || !imageUrl || !newsUrl) {
+    return res.status(400).json({ error: 'Os campos "title", "description", "imageUrl" e "newsUrl" são obrigatórios.' });
   }
 
   try {
-    // Verificar se o item já foi adicionado
+    // Verificar se o item já foi adicionado aos favoritos
     const [existingFavorite] = await pool.execute(
-      'SELECT * FROM favorites WHERE user_id = ? AND newsUrl = ?', [userId, newsUrl]
+      'SELECT * FROM favorites WHERE user_id = ? AND newsUrl = ?',
+      [userId, newsUrl]
     ) as [any[], any];
 
     if (existingFavorite.length > 0) {
@@ -24,17 +25,18 @@ export const addFavorite = async (req: Request, res: Response) => {
 
     // Inserir favorito com as informações detalhadas da notícia
     const result = await pool.execute(
-      'INSERT INTO favorites (user_id, title, description, imageUrl, newsUrl, item_id) VALUES (?, ?, ?, ?, ?, ?)',
-      [userId, title, description, imageUrl, newsUrl, item_id]
+      'INSERT INTO favorites (user_id, title, description, imageUrl, newsUrl) VALUES (?, ?, ?, ?, ?)',
+      [userId, title, description, imageUrl, newsUrl]
     );
+
     console.log('Resultado da inserção:', result);
 
     res.status(201).json({ message: 'Favorito adicionado com sucesso' });
   } catch (error) {
     console.error('Erro ao adicionar favorito:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Erro ao adicionar favorito',
-      details: error instanceof Error ? error.message : 'Erro desconhecido' 
+      details: error instanceof Error ? error.message : 'Erro desconhecido'
     });
   }
 };
