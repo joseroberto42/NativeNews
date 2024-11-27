@@ -2,27 +2,25 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
-const NewsCard = ({ title, description, imageUrl, newsUrl, onFavorite, isFavorite }) => {
+const NewsCard = ({ title, description, imageUrl, onFavorite, isFavorite, onPress }) => {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={onPress}>
+      {/* Tornar o card clicável para abrir a tela de detalhes */}
       <Image source={{ uri: imageUrl }} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
         <View style={styles.actions}>
           <TouchableOpacity onPress={onFavorite}>
-            <FontAwesome 
-              name={isFavorite ? 'star' : 'star-o'} 
-              size={24} 
-              color={isFavorite ? 'gold' : 'gray'} 
+            <FontAwesome
+              name={isFavorite ? 'star' : 'star-o'}
+              size={24}
+              color={isFavorite ? 'gold' : 'gray'}
             />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => Linking.openURL(newsUrl)}>
-            <Text style={styles.link}>Leia mais</Text>
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -54,10 +52,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 10,
-  },
-  link: {
-    color: '#007BFF',
-    fontWeight: 'bold',
   },
 });
 

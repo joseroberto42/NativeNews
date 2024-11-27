@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, ActivityIndicator, Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import {
+  ScrollView,
+  ActivityIndicator,
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Se você estiver usando AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native'; // Importação necessária para navegação
 import NewsCard from '../src/componentes/NewsCard';
 
 const API_KEY = '2bd9aa80977d4d9d8124356454bf287e'; // Substitua pela sua chave da API News
@@ -12,6 +21,8 @@ const NewsList = ({ userId }) => {
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const navigation = useNavigation(); // Hook para navegação
 
   const categories = [
     { label: 'Todos', value: null },
@@ -49,29 +60,29 @@ const NewsList = ({ userId }) => {
       const token = await AsyncStorage.getItem('authToken');
 
       if (!token) {
-        console.log('Erro de autenticação', 'Você precisa estar logado para adicionar favoritos.');
+        console.log(
+          'Erro de autenticação',
+          'Você precisa estar logado para adicionar favoritos.'
+        );
         return;
       }
 
-      // Verifica se todos os campos necessários estão presentes
       if (!news.title || !news.url || !news.description || !news.urlToImage) {
         Alert.alert('Erro', 'Faltam informações para adicionar aos favoritos.');
         return;
       }
 
-      // Cria o objeto de favoritos com todos os campos necessários
       const favoriteData = {
         user_id: userId,
         title: news.title,
-        description: news.description || '', // Caso o campo description seja opcional
-        imageUrl: news.urlToImage || '',    // Caso o campo imageUrl seja opcional
+        description: news.description || '',
+        imageUrl: news.urlToImage || '',
         newsUrl: news.url,
       };
 
-      // Envia a notícia para o backend
       await axios.post(BACKEND_URL, favoriteData, {
         headers: {
-          Authorization: `Bearer ${token}`, // Inclui o token no cabeçalho
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -88,6 +99,16 @@ const NewsList = ({ userId }) => {
   const handleCategoryPress = (category) => {
     setSelectedCategory(category);
     fetchNews(category);
+  };
+
+  const handleNewsPress = (news) => {
+    // Navega para a tela de detalhes passando os dados da notícia
+    navigation.navigate('NewsDetails', {
+      title: news.title,
+      description: news.description,
+      imageUrl: news.urlToImage,
+      newsUrl: news.url,
+    })
   };
 
   if (loading) {
@@ -140,6 +161,7 @@ const NewsList = ({ userId }) => {
               imageUrl={news.urlToImage}
               newsUrl={news.url}
               onFavorite={() => addFavorite(news)} // Chama a função de adicionar favorito
+              onPress={() => handleNewsPress(news)} // Adiciona o comportamento de navegação ao card
             />
           ))}
         </ScrollView>
