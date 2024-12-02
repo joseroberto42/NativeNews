@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, ActivityIndicator, Text, View, StyleSheet } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import NewsCard from '../src/componentes/NewsCard'; // Certifique-se de que NewsCard esteja correto
-import { useNavigation } from '@react-navigation/native'; // Adicionado para navegação
+import NewsCard from '../src/componentes/NewsCard'; 
+import { useNavigation } from '@react-navigation/native'; 
 
 const FavoriteNews = () => {
   const [favorites, setFavorites] = useState([]); // Armazena as notícias favoritas

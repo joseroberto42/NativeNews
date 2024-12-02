@@ -1,11 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Button, Linking } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, Button, Linking, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const NewsDetails = ({ route, navigation }) => {
+const NewsDetails = ({ route }) => {
   const { title, description, imageUrl, newsUrl } = route.params;
+  const navigation = useNavigation(); // Para navegar entre telas
 
   return (
     <ScrollView style={styles.container}>
+      {/* Cabeçalho com botão de voltar */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Text style={styles.backButtonText}>← Voltar</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Conteúdo da notícia */}
       <Image
         source={{ uri: imageUrl || 'https://via.placeholder.com/300' }}
         style={styles.image}
@@ -25,6 +35,20 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#fff',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  backButton: {
+    padding: 10,
+    backgroundColor: '#eee',
+    borderRadius: 5,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#007BFF',
   },
   image: {
     width: '100%',

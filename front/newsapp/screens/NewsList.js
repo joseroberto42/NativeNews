@@ -8,10 +8,11 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Ícones
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native'; // Importação necessária para navegação
-import NewsCard from '../src/componentes/NewsCard';
+import { useNavigation } from '@react-navigation/native'; // Navegação
+import NewsCard from '../src/componentes/NewsCard'; // Componente de Card de Notícias
 
 const API_KEY = '2bd9aa80977d4d9d8124356454bf287e'; // Substitua pela sua chave da API News
 const BASE_URL = 'https://newsapi.org/v2/top-headlines';
@@ -20,6 +21,7 @@ const BACKEND_URL = 'http://localhost:5000/api/favorites/favorites'; // Substitu
 const NewsList = ({ userId }) => {
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState([]); // Lista de favoritos
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const navigation = useNavigation(); // Hook para navegação
@@ -35,7 +37,6 @@ const NewsList = ({ userId }) => {
     { label: 'Tecnologia', value: 'technology' },
   ];
 
-  // Função para buscar as notícias
   const fetchNews = async (category = null) => {
     setLoading(true);
     try {
@@ -54,13 +55,12 @@ const NewsList = ({ userId }) => {
     }
   };
 
-  // Função para adicionar uma notícia aos favoritos
   const addFavorite = async (news) => {
     try {
       const token = await AsyncStorage.getItem('authToken');
 
       if (!token) {
-        console.log(
+        Alert.alert(
           'Erro de autenticação',
           'Você precisa estar logado para adicionar favoritos.'
         );
@@ -86,15 +86,11 @@ const NewsList = ({ userId }) => {
         },
       });
 
-      console.log('Sucesso', 'Notícia adicionada aos favoritos!');
+      setFavorites((prev) => [...prev, news.title]); // Adiciona o título aos favoritos
     } catch (error) {
       console.error('Error adding favorite:', error);
     }
   };
-
-  useEffect(() => {
-    fetchNews();
-  }, []);
 
   const handleCategoryPress = (category) => {
     setSelectedCategory(category);
@@ -102,14 +98,17 @@ const NewsList = ({ userId }) => {
   };
 
   const handleNewsPress = (news) => {
-    // Navega para a tela de detalhes passando os dados da notícia
     navigation.navigate('NewsDetails', {
       title: news.title,
       description: news.description,
       imageUrl: news.urlToImage,
       newsUrl: news.url,
-    })
+    });
   };
+
+  useEffect(() => {
+    fetchNews();
+  }, []);
 
   if (loading) {
     return (
@@ -160,8 +159,9 @@ const NewsList = ({ userId }) => {
               description={news.description}
               imageUrl={news.urlToImage}
               newsUrl={news.url}
-              onFavorite={() => addFavorite(news)} // Chama a função de adicionar favorito
-              onPress={() => handleNewsPress(news)} // Adiciona o comportamento de navegação ao card
+              onFavorite={() => addFavorite(news)}
+              isFavorite={favorites.includes(news.title)} // Verifica se já é favorito
+              onPress={() => handleNewsPress(news)}
             />
           ))}
         </ScrollView>
